@@ -3,7 +3,7 @@
 // http://patreon.com/codingtrain
 // Code for: https://youtu.be/o1Ob28sF0N8
 
-abstract class Blob {
+abstract class Blob extends PhysicalObject {
   float minx;
   float miny;
   float maxx;

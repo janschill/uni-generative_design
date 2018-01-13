@@ -1,27 +1,20 @@
 import org.openkinect.freenect.*;
 import org.openkinect.freenect2.*;
 import org.openkinect.processing.*;
-import blobDetection.*;
 
 Kinect2 kinect;
 BlackHole star, star2;
 ArrayList<BlackHole> starList;
-//Iterator<Star> iter = starList.iterator();
-//Star[] stars = new Star[2];
 color[] cols;
 int[] depth;
 PImage display;
 float min = 600;
 float max = 750;
-
 int blackHolesCounter = 0;
-
 int maxLife = 50;
-
 color trackColor; 
 float threshold = 40;
 float distThreshold = 50;
-
 ArrayList<BlackHole> blackHoles = new ArrayList<BlackHole>();
 
 
