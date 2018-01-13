@@ -5,9 +5,16 @@ class Star extends PhysicalObject {
 
 
   public Star() {
+    this.velocity = new PVector(0, 0);
+    this.acceleration = new PVector(0, 0);
   }
 
   public void show() {
+    pushMatrix();
+    translate(getLocation().x, getLocation().y);
+    fill(this.getColor());
+    ellipse(0, 0, this.getDiameter(), this.getDiameter());
+    popMatrix();
   }
 
   public void applyForce(PVector force) {
@@ -16,10 +23,10 @@ class Star extends PhysicalObject {
   }
 
   public void update() {
-    velocity.add(acceleration);
-    this.getLocation().add(velocity);
+    this.velocity.add(this.acceleration);
+    this.setLocation(this.getLocation().add(velocity));
 
-    acceleration.mult(0);
+    this.acceleration.mult(0);
   }
 
   public PVector getVelocity()

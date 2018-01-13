@@ -6,7 +6,7 @@ class BlackHole extends Blob
     super(x, y);
   }
 
-  public PVector attract(BlackHole s) {    
+  public PVector attract(Star s) {    
     PVector force = PVector.sub(this.getLocation(), s.getLocation());
     float distance = force.mag();
     //println(distance);
@@ -18,7 +18,7 @@ class BlackHole extends Blob
     return force;
   }
 
-  public PVector repel(BlackHole s) {
+  public PVector repel(Star s) {
     PVector force = PVector.sub(this.getLocation(), s.getLocation());
     float distance = force.mag();
     force.normalize();
@@ -38,7 +38,7 @@ class BlackHole extends Blob
     popMatrix();
   }
 
-  public boolean checkCollision(BlackHole s) {
+  public boolean checkCollision(Star s) {
     return sq(s.getLocation().x - this.getLocation().x) + sq(s.getLocation().y - this.getLocation().y) < sq(s.getDiameter()/2 + this.getDiameter()/2);
   }
 

@@ -4,7 +4,8 @@ import org.openkinect.processing.*;
 
 Kinect2 kinect;
 BlackHole star, star2;
-ArrayList<BlackHole> starList;
+ArrayList<Star> stars;
+//Star[] stars = new Star[10];
 color[] cols;
 int[] depth;
 PImage display;
@@ -23,20 +24,22 @@ void setup() {
   initKinect();
   display = createImage(kinect.depthWidth, kinect.depthHeight, RGB);
   cols = new color[]{color(26, 68, 81), color(185, 65, 65), color(198, 65, 65), color(8, 65, 65)};
-  //star = new Star(50, cols[(int) random(0, cols.length)]);
   //print((int) random(0, cols.length));
-  //starList = new ArrayList<Star>();
+  stars = new ArrayList<Star>();
   //star.setMass(20);
   //star.setLocation(new PVector(width/2, height/2));
 
   trackColor = color(35);
 
 
-  //  for (int i = 0; i < stars.length; i++) {
-  //    stars[i] = new Star(10, cols[(int) random(0, cols.length)]);
-  //    stars[i].setMass(5);
-  //    stars[i].setLocation(new PVector(50*(i+5), 50));
-  //  }
+  for (int i = 0; i < 20; i++) {
+    Star s = new Star();
+    s.setDiameter(15);
+    s.setColor(cols[(int) random(0, cols.length)]);
+    s.setMass(5);
+    s.setLocation(new PVector(random(0, width), random(0, height)));
+    stars.add(s);
+  }
 }
 
 
@@ -101,6 +104,7 @@ void draw() {
           s.setColor(cols[(int) random(0, cols.length)]);
           //s.setLocation(s.getCenter());
           s.setDiameter(85);
+          s.setMass(50);
           currentBlackHoles.add(s);
         }
       }
@@ -153,7 +157,6 @@ void draw() {
       s.taken = false;
     }
 
-
     // Match whatever blobs you can match
     for (BlackHole cb : currentBlackHoles) {
       float recordD = 1000;
@@ -193,49 +196,24 @@ void draw() {
     s.show();
   } 
 
-
-
-
-
   //if (totalPixels > 50) {
   //  float avgX = sumX / totalPixels;
   //  float avgY = sumY / totalPixels;
   //  star.setLocation(new PVector(avgX, avgY));
   //}
-  //for (Star s : starList) {
-  //  PVector force = star.attract(s);
-  //  s.applyForce(force);
-  //  s.update();
-  //  s.show();
-  //if (star.checkCollision(s)) {
-  //  starList.remove(s);
-  //  return;
-  //}
-}
 
-
-//PVector force = star.attract(star2);
-//star2.applyForce(force);
-//star2.update();
-//star2.show();
-
-//PVector force2 = star2.attract(star);
-//star.applyForce(force2);
-
-//star.update();
-//star.show();
-//}
-
-
-float distSq(float x1, float y1, float x2, float y2) {
-  float d = (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1);
-  return d;
-}
-
-
-float distSq(float x1, float y1, float z1, float x2, float y2, float z2) {
-  float d = (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1) +(z2-z1)*(z2-z1);
-  return d;
+  for (Star s : stars) {
+    for (BlackHole b : blackHoles) {
+      PVector force = b.attract(s);
+      s.applyForce(force);
+      s.update();
+      s.show();
+      if (b.checkCollision(s)) {
+        stars.remove(s);
+        return;
+      }
+    }
+  }
 }
 
 
@@ -252,19 +230,29 @@ void keyPressed() {
   }
 }
 
-
 void mouseClicked()
 {
-  BlackHole s = new BlackHole(15, cols[(int) random(0, cols.length)]);
+  Star s = new Star();
+  s.setDiameter(15);
+  s.setColor(cols[(int) random(0, cols.length)]);
   s.setMass(15);
   s.setLocation(new PVector(mouseX, mouseY));
-  starList.add(s);
+  stars.add(s);
+}
+
+float distSq(float x1, float y1, float x2, float y2) {
+  float d = (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1);
+  return d;
+}
+
+float distSq(float x1, float y1, float z1, float x2, float y2, float z2) {
+  float d = (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1) +(z2-z1)*(z2-z1);
+  return d;
 }
 
 void initKinect()
 {
   kinect = new Kinect2(this);
-  //kinect.initVideo();
   kinect.initDepth();
   kinect.initDevice();
 }
