@@ -5,7 +5,6 @@ import org.openkinect.processing.*;
 Kinect2 kinect;
 BlackHole star, star2;
 ArrayList<Star> stars;
-//Star[] stars = new Star[10];
 color[] cols;
 int[] depth;
 PImage display;
@@ -204,7 +203,12 @@ void draw() {
 
   for (Star s : stars) {
     for (BlackHole b : blackHoles) {
-      PVector force = b.attract(s);
+      PVector force;
+      if (b.getAttractor()) {
+        force = b.attract(s);
+      } else {
+        force = b.repel(s);
+      }
       s.applyForce(force);
       s.update();
       s.show();

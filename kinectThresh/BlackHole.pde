@@ -4,6 +4,11 @@ class BlackHole extends Blob
 
   public BlackHole(float x, float y) {
     super(x, y);
+    
+    if (random(100) > 50)
+    {
+      this.setAttractor(true);
+    }
   }
 
   public PVector attract(Star s) {    
