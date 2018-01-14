@@ -179,13 +179,6 @@ for (Star s : stars) {
 }
 ```
 
-
-
-
-## Gestaltungsmittel
-
-## Realisierung
-
 ## Entwicklungprozess
 Der Entwicklungsprozess bestand darin, dass ich anfangs viel Zeit in die andere beiden Idee investiert habe und dadurch dann weniger Zeit für meine neue und engültige Idee hatte.
 
