@@ -2,7 +2,6 @@ class BlackHole extends Blob
 {
   public BlackHole(float x, float y) {
     super(x, y);
-
   }
 
   public PVector attract(Star s) {    
@@ -26,7 +25,6 @@ class BlackHole extends Blob
     force.mult(strength);
     return force;
   }
-
 
   public void show() {
     println("X:"+this.getLocation().x + " Y:" + getLocation().y + " D:" + getDiameter());

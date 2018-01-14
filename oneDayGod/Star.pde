@@ -3,7 +3,6 @@ class Star extends PhysicalObject {
   private PVector velocity;
   private PVector acceleration;
 
-
   public Star() {
     this.velocity = new PVector(0, 0);
     this.acceleration = new PVector(0, 0);

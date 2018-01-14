@@ -5,7 +5,6 @@ abstract class PhysicalObject {
   private PVector location;
   private float mass;
 
-
   public PhysicalObject() {
     this.diameter = 0;
     this.col = color(0);

@@ -20,13 +20,17 @@ ArrayList<BlackHole> blackHoles = new ArrayList<BlackHole>();
 boolean attracting = false;
 
 int numOfStars = 250;
-int blackHoleMassMax = 50;
-int blackHoleMassMin = 25;
+int blackHoleMassMax = 100;
+int blackHoleMassMin = 50;
 int starMassMax = 15;
 int starMassMin = 5;
 
 void setup() {
-  // 512, 424
+  if (random(100) > 50) {
+    this.attracting = true;
+  }
+  
+  // 512, 424 kinect camera format
   size(2048, 1696, P2D);
   initKinect();
   display = createImage(kinect.depthWidth, kinect.depthHeight, RGB);
@@ -63,10 +67,6 @@ void draw() {
 
   ArrayList<BlackHole> currentBlackHoles = new ArrayList<BlackHole>();
 
-  float sumX = 0;
-  float sumY = 0;
-  float totalPixels = 0;
-
   for (int x = 0; x < kinect.depthWidth; x++) {
     for (int y = 0; y < kinect.depthHeight; y++) {
       int offset = x + y * kinect.depthWidth;
@@ -74,10 +74,6 @@ void draw() {
 
       if (de > min && de < max) {
         display.pixels[offset] = (color(35));
-
-        sumX += x;
-        sumY += y;
-        totalPixels++;
       } else {
         display.pixels[offset] = (color(0, 0, 0));
       }
@@ -92,7 +88,7 @@ void draw() {
 
       float d = distSq(r1, g1, b1, r2, g2, b2); 
 
-      if (d < threshold*threshold && totalPixels > 250) {
+      if (d < threshold*threshold) {
 
         boolean found = false;
         for (BlackHole s : currentBlackHoles) {
@@ -105,7 +101,7 @@ void draw() {
 
         if (!found) {
           BlackHole s = new BlackHole(x, y);
-          attracting ^= true;
+          //attracting ^= true;
           s.setColor(cols[(int) random(0, cols.length)]);
           //s.setLocation(s.getCenter());
           s.setDiameter(85);
@@ -122,7 +118,6 @@ void draw() {
     }
   }
 
-  // There are no stars!
   if (blackHoles.isEmpty() && currentBlackHoles.size() > 0) {
     println("Adding blackHoles!");
     for (BlackHole s : currentBlackHoles) {
@@ -131,7 +126,6 @@ void draw() {
       blackHolesCounter++;
     }
   } else if (blackHoles.size() <= currentBlackHoles.size()) {
-    // Match whatever blobs you can match
     for (BlackHole s : blackHoles) {
       float recordD = 1000;
       BlackHole matched = null;
@@ -148,7 +142,6 @@ void draw() {
       s.become(matched);
     }
 
-    // Whatever is leftover make new blobs
     for (BlackHole s : currentBlackHoles) {
       if (!s.taken) {
         s.id = blackHolesCounter;
@@ -201,7 +194,6 @@ void draw() {
     s.show();
   } 
 
-
   for (Star s : stars) {
     if (blackHoles.size() > 0)
     {
@@ -229,7 +221,6 @@ void draw() {
   }
   popMatrix();
 }
-
 
 void keyPressed() {
   if (key == 'a') {
