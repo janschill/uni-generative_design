@@ -1,4 +1,5 @@
-# Generative Design
+# Generatives Gestalten
+##### Jan Schill (jasc7047) 590303
 
 ## Ideas
 - NASA API von Meteoriten auf einer 3D Erde platzieren und animieren
@@ -8,10 +9,10 @@
 Ich habe mich entschieden die letzte Idee umzusetzen.
 
 ## Konzeptioneller Ansatz
-Der Akteur soll vor der Kinect stehen und mit den Haenden in einem festgelegten Threshold _schwarze Loecher_ erzeugen und mit diesen die auf der Zeichenflaechen gezeichneten Planeten interagieren.
+Der Akteur soll vor der Kinect stehen und mit den Händen in einem festgelegten Threshold _schwarze Löcher_ erzeugen und mit diesen die auf der Zeichenflächen gezeichneten Planeten interagieren.
 
 ## Technische Umsetzung
-Die Kinect verfuegt ueber einen Tiefenerkennungssensor, der sich fuer meine Projekt ideal eignet. Also lasse ich mir mit 
+Die Kinect verfuegt über einen Tiefenerkennungssensor, der sich für meine Projekt ideal eignet. Also lasse ich mir mit
 ```
 depth = kinect.getRawDepth();
 
@@ -28,10 +29,10 @@ for (int x = 0; x < kinect.depthWidth; x++) {
     }
 }
 ```
-aus meinen gewuenschten `min` bzw. `max` Treshold die Pixel geben. Ich lasse mir bei diesen Pixeln den Bereich grau einfaerben, alles andere soll schwarz sein.
-`display.pixels[offset] = (color(0, 0, 0));` 
+aus meinen gewünschten `min` bzw. `max` Treshold die Pixel geben. Ich lasse mir bei diesen Pixeln den Bereich grau einfärben, alles andere soll schwarz sein.
+`display.pixels[offset] = (color(0, 0, 0));`
 
-Um zwischen verschiedenen Haenden zu unterscheiden benoetigt man einen `Blob Detection`-Algorithmus. Mit diesem diffenziere ich zwischen zwei Haenden, die benutzt werden koennen und lasse an den Haenden (im Zentrum der Pixel im Threshold) jeweils ein _schwarzes Loch_ erscheinen.
+Um zwischen verschiedenen Händen zu unterscheiden benötigt man einen `Blob Detection`-Algorithmus. Mit diesem diffenziere ich zwischen zwei Händen, die benutzt werden können und lasse an den Händen (im Zentrum der Pixel im Threshold) jeweils ein _schwarzes Loch_ erscheinen.
 
 ### Blob Detection
 Am Anfang erzeuge ich eine Konstante mit der ich sage, nach welcher Farbe der Algorithmus suchen soll, da ich das ja _einfach_ festlegen kann.
@@ -45,11 +46,11 @@ float r2 = red(trackColor);
 float g2 = green(trackColor);
 float b2 = blue(trackColor);
 
-float d = distSq(r1, g1, b1, r2, g2, b2); 
+float d = distSq(r1, g1, b1, r2, g2, b2);
 ```
 und berechne mir mit diesen einen _Mittelwert_, welcher bestimmt, ob der _abgefangene_ Farbwert dem gesuchten entspricht: `if (d < threshold*threshold && totalPixels > 250) {`
 
-Hier ueberpruefen wir, ob wir in unserer _schwarzem Loch_-ArrayList, Pixel haben, welche in Naehe des gefundenen Pixeles sind, so dass wir *nicht* ein neues _schwarzes Loch_ erzeugen, sondern ein vorhandenes erweitern.
+Hier überprüfen wir, ob wir in unserer _schwarzem Loch_-ArrayList, Pixel haben, welche in Nähe des gefundenen Pixeles sind, so dass wir *nicht* ein neues _schwarzes Loch_ erzeugen, sondern ein vorhandenes erweitern.
 ```
 boolean found = false;
   for (BlackHole s : currentBlackHoles) {
@@ -60,7 +61,7 @@ boolean found = false;
        }
   }
 ```
-Wenn der Pixel, nicht in der Naehe eines vorhandenen _schwarzen Loches_ ist, wird ein Neues erzeugt:
+Wenn der Pixel, nicht in der Nähe eines vorhandenen _schwarzen Loches_ ist, wird ein Neues erzeugt:
 ```
 if (!found) {
   BlackHole s = new BlackHole(x, y);
@@ -70,15 +71,15 @@ if (!found) {
   currentBlackHoles.add(s);
 }
 ```
-Um eine Mindestgroesse festzulegen, entfernen wir einfach die, welche kleiner sind als 500 Pixel:
+Um eine Mindestgrösse festzulegen, entfernen wir einfach die, welche kleiner sind als 500 Pixel:
 ```
 for (int i = currentBlackHoles.size()-1; i >= 0; i--) {
   if (currentBlackHoles.get(i).size() < 500) {
     currentBlackHoles.remove(i);
   }
 }
-``` 
-In den folgenden Zeilen bestimmen wir, welche _Blobs_, zusammengefuegt werden koennen:
+```
+In den folgenden Zeilen bestimmen wir, welche _Blobs_, zusammengefügt werden können:
 ```
 if (blackHoles.isEmpty() && currentBlackHoles.size() > 0) {
   for (BlackHole s : currentBlackHoles) {
@@ -95,7 +96,7 @@ if (blackHoles.isEmpty() && currentBlackHoles.size() > 0) {
         PVector centerCB = cb.getCenter();         
         float d = PVector.dist(centerB, centerCB);
         if (d < recordD && !cb.taken) {
-          recordD = d; 
+          recordD = d;
           matched = cb;
         }
       }
@@ -123,7 +124,7 @@ if (blackHoles.isEmpty() && currentBlackHoles.size() > 0) {
         PVector centerCB = cb.getCenter();         
         float d = PVector.dist(centerB, centerCB);
         if (d < recordD && !s.taken) {
-          recordD = d; 
+          recordD = d;
           matched = s;
         }
       }
@@ -144,7 +145,7 @@ if (blackHoles.isEmpty() && currentBlackHoles.size() > 0) {
   }
 }
 ```
-Am Ende muessen wir alle Pixel einmal updaten und ein Bild zeichnen, damit wir die Illusion erzeugen, dass das Kinectbild groesser ist als nur die `512x424`-Pixel, transformieren wir das Bild ins Zentrum einer groesseren Zeichenflaeche und zeichnen rundherum eine schwarze Flaeche, in der die Sterne (nicht die schwarzen Loecher!) _fliegen_ koennen.
+Am Ende müssen wir alle Pixel einmal updaten und ein Bild zeichnen, damit wir die Illusion erzeugen, dass das Kinectbild grösser ist als nur die `512x424`-Pixel, transformieren wir das Bild ins Zentrum einer grösseren Zeichenfläche und zeichnen rundherum eine schwarze Fläche, in der die Sterne (nicht die schwarzen Löcher!) _fliegen_ können.
 ```
 display.updatePixels();
 pushMatrix();
@@ -154,9 +155,9 @@ image(display, 0, 0);
 for (BlackHole s : blackHoles) {
   s.setLocation(s.getCenter());
   s.show();
-} 
+}
 ```
-Nach dem Zeichnen muessen wir fuer die Interaktion zwischen Sternen/Planeten und schwarzen Loechern sorgen. Dies geschieht mit:
+Nach dem Zeichnen müssen wir für die Interaktion zwischen Sternen/Planeten und schwarzen Löchern sorgen. Dies geschieht mit:
 ```
 for (Star s : stars) {
   if (blackHoles.size() > 0)
@@ -195,7 +196,7 @@ import org.openkinect.freenect.*;
 import org.openkinect.freenect2.*;
 import org.openkinect.processing.*;
 ```
-Mithilfe dieser Bilbiotheken wird eine Verbindung zur per USB-angeschlossenen Kinect aufzubauen.
+Mithilfe dieser Bilbiotheken wird eine Verbindung zur per USB-angeschlossenen Kinect aufzubaün.
 
 Mit `Kinect2 kinect = new Kinect2(this);` wird dann ein Objekt erzeugt, mit dem man dann auf den Datenstrom der Kinect zugreifen kann.
 ```
