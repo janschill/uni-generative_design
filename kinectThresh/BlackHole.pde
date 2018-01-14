@@ -1,14 +1,14 @@
 class BlackHole extends Blob
 {
-  private boolean attractor = false;
+  private boolean attractor = true;
 
   public BlackHole(float x, float y) {
     super(x, y);
     
-    if (random(100) > 50)
-    {
-      this.setAttractor(true);
-    }
+    //if (random(100) > 50)
+    //{
+    //  this.setAttractor(true);
+    //}
   }
 
   public PVector attract(Star s) {    

@@ -12,30 +12,43 @@ float min = 600;
 float max = 750;
 int blackHolesCounter = 0;
 int maxLife = 50;
-color trackColor; 
+final color trackColor = color(35); 
 float threshold = 40;
 float distThreshold = 50;
 ArrayList<BlackHole> blackHoles = new ArrayList<BlackHole>();
 
+int numOfStars = 150;
+int blackHoleMassMax = 50;
+int blackHoleMassMin = 25;
+int starMassMax = 15;
+int starMassMin = 5;
 
 void setup() {
-  size(512, 424, P2D);
+  // 512, 424
+  size(2048, 1696, P2D);
   initKinect();
   display = createImage(kinect.depthWidth, kinect.depthHeight, RGB);
-  cols = new color[]{color(26, 68, 81), color(185, 65, 65), color(198, 65, 65), color(8, 65, 65)};
-  //print((int) random(0, cols.length));
+  cols = new color[]{color(26, 68, 81), 
+    color(185, 65, 65), 
+    color(198, 65, 65), 
+    color(8, 65, 65), 
+    color(220, 20, 60), 
+    color(250, 128, 114), 
+    color(95, 158, 160), 
+    color(106, 90, 205), 
+    color(221, 160, 221), 
+    color(245, 245, 220), 
+    color(255, 228, 225), 
+    color(34, 139, 34)};
+
   stars = new ArrayList<Star>();
-  //star.setMass(20);
-  //star.setLocation(new PVector(width/2, height/2));
-
-  trackColor = color(35);
 
 
-  for (int i = 0; i < 20; i++) {
+  for (int i = 0; i < numOfStars; i++) {
     Star s = new Star();
-    s.setDiameter(15);
+    s.setDiameter(random(5, 25));
     s.setColor(cols[(int) random(0, cols.length)]);
-    s.setMass(5);
+    s.setMass(random(starMassMin, starMassMax));
     s.setLocation(new PVector(random(0, width), random(0, height)));
     stars.add(s);
   }
@@ -45,7 +58,6 @@ void setup() {
 void draw() {
   background(0);
   display.loadPixels();
-
   depth = kinect.getRawDepth();
 
   ArrayList<BlackHole> currentBlackHoles = new ArrayList<BlackHole>();
@@ -54,10 +66,6 @@ void draw() {
   float sumY = 0;
   float totalPixels = 0;
 
-  //  int record = 4500;
-  //  int rx = 0;
-  //  int ry = 0;
-
   for (int x = 0; x < kinect.depthWidth; x++) {
     for (int y = 0; y < kinect.depthHeight; y++) {
       int offset = x + y * kinect.depthWidth;
@@ -65,11 +73,7 @@ void draw() {
 
       if (de > min && de < max) {
         display.pixels[offset] = (color(35));
-        //if ( d < record) {
-        //  record = d;
-        //  rx = i;
-        //  ry = j;
-        //}
+
         sumX += x;
         sumY += y;
         totalPixels++;
@@ -103,13 +107,12 @@ void draw() {
           s.setColor(cols[(int) random(0, cols.length)]);
           //s.setLocation(s.getCenter());
           s.setDiameter(85);
-          s.setMass(50);
+          s.setMass(random(blackHoleMassMin, blackHoleMassMax));
           currentBlackHoles.add(s);
         }
       }
     }
   }
-
 
   for (int i = currentBlackHoles.size()-1; i >= 0; i--) {
     if (currentBlackHoles.get(i).size() < 500) {
@@ -187,7 +190,10 @@ void draw() {
   }
 
   display.updatePixels();
+  pushMatrix();
+  translate(width*0.4, height*0.4);
   image(display, 0, 0);
+
 
   println(blackHoles.size());
   for (BlackHole s : blackHoles) {
@@ -195,29 +201,32 @@ void draw() {
     s.show();
   } 
 
-  //if (totalPixels > 50) {
-  //  float avgX = sumX / totalPixels;
-  //  float avgY = sumY / totalPixels;
-  //  star.setLocation(new PVector(avgX, avgY));
-  //}
 
   for (Star s : stars) {
-    for (BlackHole b : blackHoles) {
-      PVector force;
-      if (b.getAttractor()) {
-        force = b.attract(s);
-      } else {
-        force = b.repel(s);
-      }
-      s.applyForce(force);
-      s.update();
-      s.show();
-      if (b.checkCollision(s)) {
-        stars.remove(s);
-        return;
+    if (blackHoles.size() > 0)
+    {
+      for (BlackHole b : blackHoles) {
+        PVector force;
+        if (b.getAttractor()) {
+          force = b.attract(s);
+        } else {
+          force = b.repel(s);
+        }
+        s.applyForce(force);
+        s.update();
+        s.show();
+        //if (b.checkCollision(s)) {
+        //  stars.remove(s);
+        //  return;
+        //}
       }
     }
+    //PVector random = new PVector(random(-0.25, 0.25), random(-0.25, 0.25));
+    //s.applyForce(random);
+    s.update();
+    s.show();
   }
+  popMatrix();
 }
 
 
@@ -236,6 +245,7 @@ void keyPressed() {
 
 void mouseClicked()
 {
+  translate(width*0.4, height*0.4);
   Star s = new Star();
   s.setDiameter(15);
   s.setColor(cols[(int) random(0, cols.length)]);
