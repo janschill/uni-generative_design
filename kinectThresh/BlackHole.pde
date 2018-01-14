@@ -1,8 +1,14 @@
 class BlackHole extends Blob
 {
+  private boolean attractor = true;
+
   public BlackHole(float x, float y) {
     super(x, y);
-
+    
+    //if (random(100) > 50)
+    //{
+    //  this.setAttractor(true);
+    //}
   }
 
   public PVector attract(Star s) {    
@@ -22,7 +28,7 @@ class BlackHole extends Blob
     float distance = force.mag();
     force.normalize();
     distance = constrain(distance, 5, 100);
-    float strength = -1 * 250 / (distance * distance);
+    float strength = -1 * Newton.GRAVITY / (distance * distance);
     force.mult(strength);
     return force;
   }
@@ -41,4 +47,13 @@ class BlackHole extends Blob
     return sq(s.getLocation().x - this.getLocation().x) + sq(s.getLocation().y - this.getLocation().y) < sq(s.getDiameter()/2 + this.getDiameter()/2);
   }
 
+  public void setAttractor(boolean attract)
+  {
+    this.attractor = attract;
+  }
+
+  public boolean getAttractor()
+  {
+    return this.attractor;
+  }
 }

@@ -17,7 +17,9 @@ float threshold = 40;
 float distThreshold = 50;
 ArrayList<BlackHole> blackHoles = new ArrayList<BlackHole>();
 
-int numOfStars = 150;
+boolean attracting = false;
+
+int numOfStars = 250;
 int blackHoleMassMax = 50;
 int blackHoleMassMin = 25;
 int starMassMax = 15;
@@ -43,13 +45,12 @@ void setup() {
 
   stars = new ArrayList<Star>();
 
-
   for (int i = 0; i < numOfStars; i++) {
     Star s = new Star();
     s.setDiameter(random(5, 25));
     s.setColor(cols[(int) random(0, cols.length)]);
     s.setMass(random(starMassMin, starMassMax));
-    s.setLocation(new PVector(random(0, width), random(0, height)));
+    s.setLocation(new PVector(random(-width*0.5, width*0.5), random(-height*0.5, height*0.5)));
     stars.add(s);
   }
 }
@@ -104,6 +105,7 @@ void draw() {
 
         if (!found) {
           BlackHole s = new BlackHole(x, y);
+          attracting ^= true;
           s.setColor(cols[(int) random(0, cols.length)]);
           //s.setLocation(s.getCenter());
           s.setDiameter(85);
@@ -194,8 +196,6 @@ void draw() {
   translate(width*0.4, height*0.4);
   image(display, 0, 0);
 
-
-  println(blackHoles.size());
   for (BlackHole s : blackHoles) {
     s.setLocation(s.getCenter());
     s.show();
@@ -207,7 +207,8 @@ void draw() {
     {
       for (BlackHole b : blackHoles) {
         PVector force;
-        if (b.getAttractor()) {
+        println(attracting);
+        if (attracting) {          
           force = b.attract(s);
         } else {
           force = b.repel(s);
